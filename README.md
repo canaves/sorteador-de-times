@@ -2,10 +2,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sorteador de Times (Equilibrado)</title>
+  <title>Sorteador de Times (Vôlei)</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle fill='%237c5cff' cx='50' cy='50' r='50'/><text fill='white' font-size='60' font-weight='bold' text-anchor='middle' y='65'>🎲</text></svg>">
+  
+  <!-- 🏐 FAVICON BOLA DE VÔLEI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle fill='%23f4a226' cx='50' cy='50' r='45' stroke='%23262626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/><circle fill='%23ffffff' cx='50' cy='50' r='28' opacity='0.4'/><circle fill='%23262626' cx='28' cy='28' r='8'/><circle fill='%23262626' cx='72' cy='28' r='8'/><circle fill='%23262626' cx='28' cy='72' r='8'/><circle fill='%23262626' cx='72' cy='72' r='8'/><path fill='none' stroke='%23262626' stroke-width='3' stroke-linecap='round' d='M 20 50 Q 50 30 80 50 Q 50 70 20 50'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle fill='%23f4a226' cx='50' cy='50' r='45' stroke='%23262626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/><circle fill='%23ffffff' cx='50' cy='50' r='28' opacity='0.4'/><circle fill='%23262626' cx='28' cy='28' r='8'/><circle fill='%23262626' cx='72' cy='28' r='8'/><circle fill='%23262626' cx='28' cy='72' r='8'/><circle fill='%23262626' cx='72' cy='72' r='8'/><path fill='none' stroke='%23262626' stroke-width='3' stroke-linecap='round' d='M 20 50 Q 50 30 80 50 Q 50 70 20 50'/></svg>">
+
   <style>
     :root{
       --bg:#0b1020; --card:#121a33; --card2:#0f1730; --text:#e8ecff; --muted:#aab3df;
@@ -118,7 +122,7 @@
 <body>
 <header>
   <div>
-    <h1>Sorteador de Times (Equilibrado)</h1>
+    <h1>🏐 Sorteador de Times (Vôlei)</h1>
     <div class="sub">
       Selecione quem vai jogar e clique em <b>Sortear</b>.
     </div>
@@ -417,7 +421,7 @@ function createTeamElement(team, teamIndex){
   const teamDiv = document.createElement("div");
   teamDiv.className = "team";
   
-  const teamNames = ["🔴 Jabur", "🔵 Mascarenhas", "🟢 Hernandes"];
+  const teamNames = ["🔴 Time 1", "🔵 Time 2", "🟢 Time 3"];
   teamDiv.innerHTML = `
     <h3>${teamNames[teamIndex] || `⚪ Time ${teamIndex + 1}`}</h3>
     <ul class="ul"></ul>
