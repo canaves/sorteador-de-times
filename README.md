@@ -421,7 +421,7 @@ function createTeamElement(team, teamIndex){
   const teamDiv = document.createElement("div");
   teamDiv.className = "team";
   
-  const teamNames = ["🔴 Time 1", "🔵 Time 2", "🟢 Time 3"];
+  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
   teamDiv.innerHTML = `
     <h3>${teamNames[teamIndex] || `⚪ Time ${teamIndex + 1}`}</h3>
     <ul class="ul"></ul>
