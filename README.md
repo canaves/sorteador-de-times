@@ -492,7 +492,7 @@ function renderTeams(teams, reserves){
 }
 
 function generateWhatsAppText(teams, reserves){
-  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
+  const teamNames = ["🔴 *Time Jabur*", "🔵 *Time Mascarenhas*", "🟢 *Time Hernandes*"];
   
   let text = "🏐 *TIMES SORTEADOS* 🏐\n\n";
   
@@ -515,7 +515,7 @@ function generateWhatsAppText(teams, reserves){
     });
   }
   
-  text += "\n_Sorteio automático balanceado_";
+  text += "\n_Vamos para o Game! 💪_";
   
   return text;
 }
