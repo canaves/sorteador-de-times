@@ -234,12 +234,13 @@ const DEFAULT_PLAYERS = [
   { name: "Wellington", points: 7 },
   { name: "Bryan", points: 8 },
   { name: "Kayo", points: 8 },
-  { name: "Mateus", points: 4 },
-  { name: "Luan", points: 4 },
-  { name: "Leticia", points: 6 },
+  { name: "Mateus", points: 3 },
+  { name: "Luan", points: 3 },
+  { name: "Leticia", points: 5 },
   { name: "Carol", points: 8 },
   { name: "Thais", points: 2 },
   { name: "Gislaine", points: 3 },
+  { name: "Brad (Steve)", points: 6 },
   { name: "Isabel", points: 3 }
 ];
 
