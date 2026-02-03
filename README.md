@@ -434,7 +434,7 @@ const DEFAULT_PLAYERS = [
   { name: "Carol", points: 8 },
   { name: "Thais", points: 2 },
   { name: "Gislaine", points: 3 },
-  { name: "Brad (Steve)", points: 3 },
+  { name: "Brad Steve", points: 3 },
   { name: "Isabel", points: 3 }
 ];
 
