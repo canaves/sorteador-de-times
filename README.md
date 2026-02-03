@@ -55,6 +55,10 @@
     }
     button.ghost{background:transparent}
     button.danger{background: rgba(255,92,122,.16)}
+    button.success{
+      background: linear-gradient(135deg, rgba(41,211,154,.9), rgba(41,211,154,.6));
+      border-color: transparent;
+    }
     input[type="text"]{
       flex:1; padding:10px 12px; border-radius:10px;
       border:1px solid var(--border); background: var(--card2); color:var(--text);
@@ -115,6 +119,21 @@
       background: rgba(255,255,255,.03);
       font-size:12px; color:var(--muted);
     }
+    .copy-btn-container{
+      margin-top:16px; text-align:center;
+    }
+    .toast{
+      position:fixed; top:20px; right:20px;
+      background: linear-gradient(135deg, rgba(41,211,154,.95), rgba(41,211,154,.85));
+      color: white;
+      padding:12px 20px; border-radius:12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+      font-weight:600; font-size:14px;
+      opacity:0; pointer-events:none;
+      transition: opacity 0.3s;
+      z-index:9999;
+    }
+    .toast.show{opacity:1}
     footer{max-width:1200px; margin:0 auto; padding:16px; color:var(--muted); font-size:12px}
     a{color:#b7b3ff}
   </style>
@@ -183,8 +202,16 @@
       <div><strong>Reservas (se houver):</strong></div>
       <div class="reserves" id="reserves"></div>
     </div>
+
+    <div class="copy-btn-container">
+      <button class="success" id="btnCopyWhatsApp" style="display:none;">
+        📋 Copiar para WhatsApp
+      </button>
+    </div>
   </section>
 </main>
+
+<div id="toast" class="toast">✅ Copiado para a área de transferência!</div>
 
 <footer>
   <div>
@@ -319,6 +346,7 @@ function bestBalancedTeams(playing, numTeams, playersPerTeam, iterations=15000){
  *  ========================= */
 let players = loadPlayersDB();
 let selected = loadSelectedSet();
+let lastDrawResult = null; // Para guardar o último sorteio
 
 const els = {
   list: document.getElementById("playersList"),
@@ -335,7 +363,9 @@ const els = {
   reserves: document.getElementById("reserves"),
   statusBox: document.getElementById("statusBox"),
   numTeams: document.getElementById("numTeams"),
-  playersPerTeam: document.getElementById("playersPerTeam")
+  playersPerTeam: document.getElementById("playersPerTeam"),
+  btnCopyWhatsApp: document.getElementById("btnCopyWhatsApp"),
+  toast: document.getElementById("toast")
 };
 
 function updateTotalNeeded(){
@@ -415,6 +445,8 @@ function renderPlayers(){
 function clearTeams(){
   els.teamsContainer.innerHTML = "";
   els.reserves.innerHTML = "";
+  els.btnCopyWhatsApp.style.display = "none";
+  lastDrawResult = null;
 }
 
 function createTeamElement(team, teamIndex){
@@ -459,6 +491,70 @@ function renderTeams(teams, reserves){
   }
 }
 
+function generateWhatsAppText(teams, reserves){
+  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
+  
+  let text = "🏐 *TIMES SORTEADOS* 🏐\n\n";
+  
+  teams.forEach((team, idx) => {
+    const teamName = teamNames[idx] || `⚪ Time ${idx + 1}`;
+    const sortedTeam = team.slice().sort((a,b) => a.name.localeCompare(b.name,"pt-BR"));
+    
+    text += `${teamName}\n`;
+    sortedTeam.forEach(p => {
+      text += `• ${p.name}\n`;
+    });
+    text += "\n";
+  });
+  
+  if(reserves.length){
+    text += "🪑 *Reservas:*\n";
+    const sortedReserves = reserves.slice().sort((a,b) => a.name.localeCompare(b.name,"pt-BR"));
+    sortedReserves.forEach(p => {
+      text += `• ${p.name}\n`;
+    });
+  }
+  
+  text += "\n_Sorteio automático balanceado_";
+  
+  return text;
+}
+
+function copyToClipboard(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => {
+      showToast();
+    }).catch(err => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text){
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  try{
+    document.execCommand("copy");
+    showToast();
+  }catch(err){
+    alert("Não foi possível copiar. Tente manualmente.");
+  }
+  document.body.removeChild(textarea);
+}
+
+function showToast(){
+  els.toast.classList.add("show");
+  setTimeout(() => {
+    els.toast.classList.remove("show");
+  }, 2500);
+}
+
 function draw(){
   clearTeams();
 
@@ -500,6 +596,10 @@ function draw(){
      ${reserves.length ? `Reservas: <strong>${reserves.length}</strong>` : "Todos jogando!"}`;
 
   renderTeams(teams, reserves);
+  
+  // Salva o resultado e mostra botão de copiar
+  lastDrawResult = { teams, reserves };
+  els.btnCopyWhatsApp.style.display = "inline-block";
 }
 
 /** =========================
@@ -524,6 +624,13 @@ els.btnClear.addEventListener("click", () => {
 });
 
 els.btnDraw.addEventListener("click", draw);
+
+els.btnCopyWhatsApp.addEventListener("click", () => {
+  if(!lastDrawResult) return;
+  
+  const text = generateWhatsAppText(lastDrawResult.teams, lastDrawResult.reserves);
+  copyToClipboard(text);
+});
 
 els.btnResetDB.addEventListener("click", () => {
   if(confirm("Resetar base? Perde alterações salvas.")){
