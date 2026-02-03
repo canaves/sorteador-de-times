@@ -434,8 +434,8 @@ const DEFAULT_PLAYERS = [
   { name: "Carol", points: 8 },
   { name: "Thais", points: 2 },
   { name: "Gislaine", points: 3 },
-  { name: "Brad Steve", points: 3 },
-  { name: "Isabel", points: 3 }
+  { name: "Isabel", points: 3 },
+  { name: "Brad Steve", points: 3 }
 ];
 
 function loadPlayersDB(){
@@ -448,13 +448,20 @@ function loadPlayersDB(){
   try{
     const parsed = JSON.parse(raw);
     if(Array.isArray(parsed) && parsed.length){
+      // ✅ ATUALIZA pontos dos jogadores existentes
       const defaultsMap = new Map(DEFAULT_PLAYERS.map(p => [p.name, p]));
       const merged = parsed.map(p => {
         const def = defaultsMap.get(p.name);
         return def ? { ...def } : p;
       });
-      localStorage.setItem(LS_DB_KEY, JSON.stringify(merged));
-      return merged;
+      
+      // ✅ ADICIONA novos jogadores que estão em DEFAULT_PLAYERS mas não estão salvos
+      const existingNames = new Set(merged.map(p => p.name));
+      const newPlayers = DEFAULT_PLAYERS.filter(p => !existingNames.has(p.name));
+      
+      const updated = [...merged, ...newPlayers];
+      localStorage.setItem(LS_DB_KEY, JSON.stringify(updated));
+      return updated;
     }
   }catch(e){}
   
@@ -766,7 +773,7 @@ function renderBalanceIndicator(teams){
  *  WHATSAPP
  *  ========================= */
 function generateWhatsAppText(teams, reserves){
-  const teamNames = ["🔴 *Time Jabur*", "🔵 *Time Mascarenhas*", "🟢 *Time Hernandes*"];
+  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
   
   let text = "🏐 *TIMES SORTEADOS* 🏐\n\n";
   
@@ -789,7 +796,7 @@ function generateWhatsAppText(teams, reserves){
     });
   }
   
-  text += "\n_Vamos para o Game! 💪_";
+  text += "\n_Sorteio automático balanceado_";
   
   return text;
 }
