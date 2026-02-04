@@ -200,6 +200,7 @@
     .team:nth-child(1){animation-delay:0.1s}
     .team:nth-child(2){animation-delay:0.2s}
     .team:nth-child(3){animation-delay:0.3s}
+    .team:nth-child(4){animation-delay:0.4s}
     
     .team h3{margin:0 0 12px 0; font-size:16px}
     .ul{margin:0; padding-left:16px}
@@ -323,6 +324,7 @@
         <select id="numTeams">
           <option value="2">2</option>
           <option value="3" selected>3</option>
+          <option value="4">4</option>
         </select>
       </label>
       <label>Jogadores por Time: 
@@ -331,8 +333,16 @@
           <option value="4">4</option>
           <option value="5">5</option>
           <option value="6">6</option>
+          <option value="7">7</option>
         </select>
       </label>
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="balanceTeams" checked style="cursor:pointer; width:18px; height:18px;">
+        <span>Balancear times</span>
+      </label>
+    </div>
+    <div class="hint" style="margin-top:-6px; margin-bottom:12px;">
+      💡 <strong>Balancear times:</strong> considera as notas (1-10) para equilibrar. <strong>Desativado:</strong> sorteio completamente aleatório.
     </div>
 
     <h2>Jogadores</h2>
@@ -344,7 +354,7 @@
     <div id="playersList" class="list"></div>
 
     <div class="status" id="statusBox">
-      <strong>Como funciona:</strong> o sorteio faz milhares de tentativas aleatórias considerando as pontuações (1-10) e escolhe a divisão mais equilibrada.
+      <strong>Como funciona:</strong> ative "Balancear times" para considerar as pontuações (1-10) e equilibrar os times automaticamente. Desative para sorteio completamente aleatório.
     </div>
   </section>
 
@@ -505,7 +515,7 @@ function shuffleInPlace(arr){
 }
 
 /** =========================
- *  Balanceamento: Monte Carlo (1-10 pontos)
+ *  Balanceamento: Monte Carlo (1-10 pontos) OU Aleatório
  *  ========================= */
 function teamScore(teams){
   const sums = teams.map(t => t.reduce((acc,p)=>acc+p.points,0));
@@ -516,7 +526,22 @@ function teamScore(teams){
   return (max - min) * 2 + Math.sqrt(variance);
 }
 
-function bestBalancedTeams(playing, numTeams, playersPerTeam, iterations=15000){
+function bestBalancedTeams(playing, numTeams, playersPerTeam, useBalance=true, iterations=15000){
+  // Se não quer balancear, faz apenas 1 iteração aleatória
+  if(!useBalance){
+    const shuffledPool = structuredClone(playing);
+    shuffleInPlace(shuffledPool);
+    
+    const teams = [];
+    for(let t = 0; t < numTeams; t++){
+      const start = t * playersPerTeam;
+      const end = start + playersPerTeam;
+      teams.push(shuffledPool.slice(start, end));
+    }
+    return teams;
+  }
+  
+  // Modo balanceado - Monte Carlo
   let bestScore = Infinity;
   let bestTeams = null;
   
@@ -564,6 +589,7 @@ const els = {
   statusBox: document.getElementById("statusBox"),
   numTeams: document.getElementById("numTeams"),
   playersPerTeam: document.getElementById("playersPerTeam"),
+  balanceTeams: document.getElementById("balanceTeams"),
   btnCopyWhatsApp: document.getElementById("btnCopyWhatsApp"),
   toast: document.getElementById("toast"),
   loadingOverlay: document.getElementById("loadingOverlay"),
@@ -658,7 +684,7 @@ function createTeamElement(team, teamIndex){
   const teamDiv = document.createElement("div");
   teamDiv.className = "team";
   
-  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
+  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes", "🟡 Time Silva"];
   teamDiv.innerHTML = `
     <h3>${teamNames[teamIndex] || `⚪ Time ${teamIndex + 1}`}</h3>
     <ul class="ul"></ul>
@@ -699,9 +725,9 @@ function renderTeams(teams, reserves){
 /** =========================
  *  📊 INDICADOR DE EQUILÍBRIO
  *  ========================= */
-function renderBalanceIndicator(teams){
-  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
-  const colors = ["#ff5c7a", "#7c5cff", "#29d39a"];
+function renderBalanceIndicator(teams, useBalance){
+  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes", "🟡 Time Silva"];
+  const colors = ["#ff5c7a", "#7c5cff", "#29d39a", "#ffcc66"];
   
   const sums = teams.map(t => t.reduce((acc,p)=>acc+p.points,0));
   const max = Math.max(...sums);
@@ -749,7 +775,10 @@ function renderBalanceIndicator(teams){
   let scoreClass = "excellent";
   let scoreText = "🎯 Excelente equilíbrio!";
   
-  if(diff <= 1){
+  if(!useBalance){
+    scoreClass = "fair";
+    scoreText = "🎲 Sorteio Aleatório - Pontuações não foram consideradas";
+  } else if(diff <= 1){
     scoreClass = "excellent";
     scoreText = "🎯 Perfeito! Diferença de apenas " + diff + " ponto" + (diff !== 1 ? "s" : "");
   } else if(diff <= 3){
@@ -773,7 +802,7 @@ function renderBalanceIndicator(teams){
  *  WHATSAPP
  *  ========================= */
 function generateWhatsAppText(teams, reserves){
-  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes"];
+  const teamNames = ["🔴 Time Jabur", "🔵 Time Mascarenhas", "🟢 Time Hernandes", "🟡 Time Silva"];
   
   let text = "🏐 *TIMES SORTEADOS* 🏐\n\n";
   
@@ -796,7 +825,7 @@ function generateWhatsAppText(teams, reserves){
     });
   }
   
-  text += "\n_Sorteio automático balanceado_";
+  text += "\n_Vamos para o Game! 💪_";
   
   return text;
 }
@@ -845,6 +874,7 @@ function draw(){
   const numTeams = parseInt(els.numTeams.value);
   const playersPerTeam = parseInt(els.playersPerTeam.value);
   const totalNeeded = numTeams * playersPerTeam;
+  const useBalance = els.balanceTeams.checked;
 
   const selectedPlayers = players.filter(p => selected.has(p.name));
   
@@ -857,7 +887,9 @@ function draw(){
   els.loadingOverlay.classList.add("active");
   els.btnDraw.disabled = true;
 
-  // Simula processamento (1.5 segundos)
+  // Simula processamento (1.5 segundos para balanceado, 0.8 para aleatório)
+  const loadingTime = useBalance ? 1500 : 800;
+  
   setTimeout(() => {
     const pool = structuredClone(selectedPlayers);
     shuffleInPlace(pool);
@@ -873,19 +905,22 @@ function draw(){
       return;
     }
 
-    const teams = bestBalancedTeams(structuredClone(playing), numTeams, playersPerTeam);
+    const teams = bestBalancedTeams(structuredClone(playing), numTeams, playersPerTeam, useBalance);
 
     const sums = teams.map(t => t.reduce((a,p)=>a+p.points,0));
     const max = Math.max(...sums), min = Math.min(...sums);
     
+    const modoSorteio = useBalance ? "Balanceado" : "Aleatório";
+    
     els.statusBox.innerHTML =
       `✅ <strong>Sorteio concluído!</strong><br>
+       Modo: <strong>${modoSorteio}</strong><br>
        Configuração: <strong>${numTeams}×${playersPerTeam}=${totalNeeded}</strong><br>
-       Balanceamento: <strong>${min}-${max} pts</strong> (diferença: ${max-min})<br>
+       ${useBalance ? `Balanceamento: <strong>${min}-${max} pts</strong> (diferença: ${max-min})<br>` : ''}
        ${reserves.length ? `Reservas: <strong>${reserves.length}</strong>` : "Todos jogando!"}`;
 
     renderTeams(teams, reserves);
-    renderBalanceIndicator(teams);
+    renderBalanceIndicator(teams, useBalance);
     
     lastDrawResult = { teams, reserves };
     els.btnCopyWhatsApp.style.display = "inline-block";
@@ -893,7 +928,7 @@ function draw(){
     // Remove loading
     els.loadingOverlay.classList.remove("active");
     els.btnDraw.disabled = false;
-  }, 1500);
+  }, loadingTime);
 }
 
 /** =========================
