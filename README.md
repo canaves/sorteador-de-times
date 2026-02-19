@@ -443,9 +443,7 @@ const DEFAULT_PLAYERS = [
   { name: "Brad Gabriel", points: 7 },
   { name: "Carlos", points: 9 },
   { name: "Leo X", points: 7 },
-  { name: "Leo Barbosa", points: 6 },
-  { name: "Avulso", points: 8 },
-  { name: "Avulso 2", points: 5 }
+  { name: "Leo Barbosa", points: 6 }
 ];
 
 function loadPlayersDB(){
