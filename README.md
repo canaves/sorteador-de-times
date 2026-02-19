@@ -431,21 +431,21 @@ const LS_DB_KEY = "sorteador_players_db_v1";
 const LS_SEL_KEY = "sorteador_players_selected_v1";
 
 const DEFAULT_PLAYERS = [
-  { name: "Canaves", points: 9 },
-  { name: "Luis", points: 9 },
-  { name: "Jeffin", points: 9 },
-  { name: "Gabriel", points: 9 },
-  { name: "Wellington", points: 9 },
-  { name: "Bryan", points: 10 },
-  { name: "Kayo", points: 10 },
-  { name: "Mateus", points: 6 },
+  { name: "Canaves", points: 8 },
+  { name: "Luis", points: 8 },
+  { name: "Jeffin", points: 8 },
+  { name: "Gabriel", points: 8 },
+  { name: "Wellington", points: 8 },
   { name: "Luan", points: 6 },
   { name: "Leticia", points: 7 },
-  { name: "Carol", points: 10 },
   { name: "Thais", points: 4 },
   { name: "Gislaine", points: 5 },
-  { name: "Isabel", points: 4 },
-  { name: "Brad Steve", points: 7 }
+  { name: "Brad Gabriel", points: 7 },
+  { name: "Carlos", points: 9 },
+  { name: "Leo X", points: 7 },
+  { name: "Leo Barbosa", points: 6 },
+  { name: "Avulso", points: 8 },
+  { name: "Avulso 2", points: 5 }
 ];
 
 function loadPlayersDB(){
