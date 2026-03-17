@@ -436,14 +436,18 @@ const DEFAULT_PLAYERS = [
   { name: "Jeffin", points: 8 },
   { name: "Gabriel", points: 8 },
   { name: "Wellington", points: 8 },
-  { name: "Luan", points: 6 },
-  { name: "Leticia", points: 7 },
-  { name: "Thais", points: 4 },
-  { name: "Gislaine", points: 5 },
+  { name: "Luan", points: 5 },
+  { name: "Leticia", points: 6 },
+  { name: "Thais", points: 3 },
+  { name: "Gislaine", points: 4 },
   { name: "Brad Gabriel", points: 7 },
   { name: "Carlos", points: 9 },
-  { name: "Leo X", points: 7 },
-  { name: "Leo Barbosa", points: 6 }
+  { name: "Isabel", points: 4 },
+  { name: "Mariana", points: 4 },
+  { name: "João", points: 8 },
+  { name: "Emily", points: 4 },
+  { name: "Leo X", points: 8 },
+  { name: "Leo Barbosa", points: 5 }
 ];
 
 function loadPlayersDB(){
