@@ -442,11 +442,11 @@ const DEFAULT_PLAYERS = [
   { name: "Gislaine", points: 4 },
   { name: "Brad Gabriel", points: 7 },
   { name: "Carlos", points: 9 },
-  { name: "Isabel", points: 4 },
-  { name: "Mariana", points: 4 },
+  { name: "Isabel", points: 3 },
+  { name: "Mariana", points: 3 },
   { name: "João", points: 8 },
-  { name: "Emily", points: 4 },
-  { name: "Leo X", points: 8 },
+  { name: "Emily", points: 3 },
+  { name: "Leo X", points: 7 },
   { name: "Leo Barbosa", points: 5 }
 ];
 
